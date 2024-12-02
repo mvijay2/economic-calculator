@@ -50,38 +50,41 @@ def calculate_costs(initial_cost, annual_usage, operator_wages, field_capacity, 
     return custom_hiring_cost, breakeven_Point, payback_period, total_operating_cost, total_operating_cost_rs_ha
 
 # Streamlit app
-st.title("Cost Economics Calculator")
-col1, col2 = st.columns(2)
-with col1:
+try:
+    st.title("Cost Economics Calculator")
+    col1, col2 = st.columns(2)
+    with col1:
+        
+        # User inputs
+        initial_cost = st.number_input("Initial Cost (Rs)", min_value=100, max_value=10000000, step=1000)
+        annual_usage = st.number_input("Annual Usage (Hours)", min_value=1, max_value=1000, step=1)
+        operator_wages = st.number_input("Operator Wages (Rs/day)", min_value=1,max_value=100000, step=1)
+        operator_wages_per_hr=operator_wages/8
+        
+    with col2:
+        field_capacity = st.number_input("Field Capacity (Acre/h)", min_value=0.1, max_value=1000.0, step=0.1)
+        #usefull_life = st.sidebar.number_input("usefull_life (yr)", min_value=1, max_value=1000, step=1)
+        usefull_life=st.number_input("usefull_life (yr)")
+        b=st.selectbox("Charging Type", ["Battery", "petrol", "diesel"])
+        submitted = st.button("Calculate")
+        
+    if submitted: 
     
-    # User inputs
-    initial_cost = st.number_input("Initial Cost (Rs)", min_value=100, max_value=10000000, step=1000)
-    annual_usage = st.number_input("Annual Usage (Hours)", min_value=1, max_value=1000, step=1)
-    operator_wages = st.number_input("Operator Wages (Rs/day)", min_value=1,max_value=100000, step=1)
-    operator_wages_per_hr=operator_wages/8
     
-with col2:
-    field_capacity = st.number_input("Field Capacity (Acre/h)", min_value=0.1, max_value=1000.0, step=0.1)
-    #usefull_life = st.sidebar.number_input("usefull_life (yr)", min_value=1, max_value=1000, step=1)
-    usefull_life=st.number_input("usefull_life (yr)")
-    b=st.selectbox("Charging Type", ["Battery", "petrol", "diesel"])
-    submitted = st.button("Calculate")
     
-if submitted: 
-
-
-
-    # Calculate costs
-    custom_hiring_cost, breakeven_Point, payback_period, total_operating_cost, total_operating_cost_rs_ha = calculate_costs(
-        initial_cost, annual_usage, operator_wages_per_hr, field_capacity, usefull_life,b
-    )
-    
-    # Display results  add total 
-        # Prepare results in a DataFrame for tabular display
-    results = {
-        "Metric": ["Total Operating Cost (Rs/hr)", "Custom Hiring Cost (Rs/hr)", "Breakeven Point (hours/year)", "Payback Period (years)"],
-        "Value": [total_operating_cost, custom_hiring_cost, breakeven_Point, payback_period]
-    }    
-    results_df = pd.DataFrame(results)    
-    # Display results in a table
-    st.table(results_df)
+        # Calculate costs
+        custom_hiring_cost, breakeven_Point, payback_period, total_operating_cost, total_operating_cost_rs_ha = calculate_costs(
+            initial_cost, annual_usage, operator_wages_per_hr, field_capacity, usefull_life,b
+        )
+        
+        # Display results  add total 
+            # Prepare results in a DataFrame for tabular display
+        results = {
+            "Metric": ["Total Operating Cost (Rs/hr)", "Custom Hiring Cost (Rs/hr)", "Breakeven Point (hours/year)", "Payback Period (years)"],
+            "Value": [total_operating_cost, custom_hiring_cost, breakeven_Point, payback_period]
+        }    
+        results_df = pd.DataFrame(results)    
+        # Display results in a table
+        st.table(results_df)
+except ZeroDivisionError:
+    st.error("give a valid value")
