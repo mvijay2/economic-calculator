@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-def calculate_costs(initial_cost, annual_usage, operator_wages, field_capacity, usefull_life,b): #initial cost=rs, annual usage=hours, operator_wages=rs/d, field capaccity=ha/hr
+def calculate_costs(initial_cost, annual_usage, operator_wages, field_capacity, usefull_life,b, avg_d_fuel_consumption): #initial cost=rs, annual usage=hours, operator_wages=rs/d, field capaccity=ha/hr
 
     # Constants
     salvage_cost = 0.1 * initial_cost  # Assume 10% of initial cost done
@@ -10,7 +10,7 @@ def calculate_costs(initial_cost, annual_usage, operator_wages, field_capacity, 
     hours_per_year = annual_usage #done
     
     # Fixed Costs
-    depreciation = (initial_cost - salvage_cost) / (life * hours_per_year) 
+    depreciation = (initial_cost - salvage_cost) / (life * hours_per_year)
     interest_on_capital = ((initial_cost + salvage_cost) /(hours_per_year * 2)) * interest_rate
     insurance_and_taxes = (initial_cost * 0.015) / hours_per_year
     housing = (initial_cost * 0.005) / hours_per_year
@@ -22,9 +22,9 @@ def calculate_costs(initial_cost, annual_usage, operator_wages, field_capacity, 
     #    return 
     
     if b == "diesel":
-        battery_charging = 50
+        battery_charging = avg_d_fuel_consumption * 100
     elif b == "petrol":
-        battery_charging = 55
+        battery_charging = avg_d_fuel_consumption * 110
     else:
         battery_charging = 5 # Assume constant Rs/h                to do
     lubrication = battery_charging * 0.1  # Assume constant Rs/h     10% of fuel cost                  to do
@@ -56,16 +56,19 @@ try:
     with col1:
         
         # User inputs
-        initial_cost = st.number_input("Initial Cost (Rs)", min_value=1, max_value=10000000, step=1000)
-        annual_usage = st.number_input("Annual Usage (Hours)", min_value=1, max_value=1000, step=1)
-        operator_wages = st.number_input("Operator Wages (Rs/day)", min_value=1,max_value=100000, step=1)
+        initial_cost = st.number_input("Initial Cost (Rs)", min_value=0, max_value=10000000, step=1000)
+        annual_usage = st.number_input("Annual Usage (Hours)", min_value=0, max_value=1000, step=1)
+        operator_wages = st.number_input("Operator Wages (Rs/day)", min_value=0,max_value=100000, step=1)
         operator_wages_per_hr=operator_wages/8
         
     with col2:
-        field_capacity = st.number_input("Field Capacity (Acre/h)", min_value=0.1, max_value=1000.0, step=0.1)
+        field_capacity = st.number_input("Field Capacity (Acre/h)", min_value=0.0, max_value=1000.0, step=0.1)
         #usefull_life = st.sidebar.number_input("usefull_life (yr)", min_value=1, max_value=1000, step=1)
-        usefull_life=st.number_input("usefull_life (yr)")
-        b=st.selectbox("Charging Type", ["Battery", "petrol", "diesel"])
+        usefull_life=st.number_input("Usefull_life (yr)", min_value=0,max_value=100000, step=1)
+        b=st.selectbox("Type of Power Source", ["Battery", "petrol", "diesel"])
+        if b == "petrol" or b == "diesel":
+            avg_d_fuel_consumption=st.number_input("Avg fuel consumption (ltr/h) ")
+
         submitted = st.button("Calculate")
         
     if submitted: 
@@ -74,7 +77,7 @@ try:
     
         # Calculate costs
         custom_hiring_cost, breakeven_Point, payback_period, total_operating_cost, total_operating_cost_rs_ha = calculate_costs(
-            initial_cost, annual_usage, operator_wages_per_hr, field_capacity, usefull_life,b
+            initial_cost, annual_usage, operator_wages_per_hr, field_capacity, usefull_life,b, avg_d_fuel_consumption
         )
         
         # Display results  add total 
