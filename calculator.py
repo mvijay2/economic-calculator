@@ -22,11 +22,11 @@ def calculate_costs(initial_cost, annual_usage, operator_wages, field_capacity, 
     #    return 
     
     if b == "diesel":
-        battery_charging = 100
+        battery_charging = 50
     elif b == "petrol":
-        battery_charging = 110
+        battery_charging = 55
     else:
-        battery_charging = 15 # Assume constant Rs/h                to do
+        battery_charging = 5 # Assume constant Rs/h                to do
     lubrication = battery_charging * 0.1  # Assume constant Rs/h     10% of fuel cost                  to do
     repair_and_maintenance = (initial_cost * 0.05) / hours_per_year   # again done
     total_variable_cost = battery_charging + lubrication + repair_and_maintenance + operator_wages #done
@@ -56,7 +56,7 @@ try:
     with col1:
         
         # User inputs
-        initial_cost = st.number_input("Initial Cost (Rs)", min_value=100, max_value=10000000, step=1000)
+        initial_cost = st.number_input("Initial Cost (Rs)", min_value=1, max_value=10000000, step=1000)
         annual_usage = st.number_input("Annual Usage (Hours)", min_value=1, max_value=1000, step=1)
         operator_wages = st.number_input("Operator Wages (Rs/day)", min_value=1,max_value=100000, step=1)
         operator_wages_per_hr=operator_wages/8
@@ -87,4 +87,4 @@ try:
         # Display results in a table
         st.table(results_df)
 except ZeroDivisionError:
-    st.error("give a valid value")
+    st.error("give a valid value than negative")
