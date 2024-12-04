@@ -21,8 +21,7 @@ def calculate_costs(initial_cost, annual_usage, operator_wages, field_capacity, 
     #if p == 'bettery':
     #    return 
     # Initialize fuel consumption variables
-    avg_d_fuel_consumption = 0
-    avg_e_fuel_consumption = 0
+  
         
     if b == "diesel":
         battery_charging = avg_d_fuel_consumption * 100
@@ -53,7 +52,8 @@ def calculate_costs(initial_cost, annual_usage, operator_wages, field_capacity, 
     return custom_hiring_cost, breakeven_Point, payback_period, total_operating_cost, total_operating_cost_rs_ha
 
 # Streamlit app
-
+avg_d_fuel_consumption = 0
+avg_e_fuel_consumption = 0
 st.title("Cost Economics Calculator")
 col1, col2 = st.columns(2)
 with col1:
